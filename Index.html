@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Senhas Seguras</title>
+
+  <style>
+    :root{
+      --bg1:#1c0330;
+      --bg2:#3a0a63;
+      --bg3:#5b16a3;
+      --card:rgba(255,255,255,0.08);
+      --border:rgba(255,255,255,0.15);
+      --text:#ffffff;
+      --soft:#eadcff;
+      --pink:#ff4fd8;
+      --purple:#8b3dff;
+      --cyan:#67e8f9;
+      --green:#22c55e;
+      --yellow:#facc15;
+      --red:#ef4444;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(255,79,216,.15), transparent 25%),
+        radial-gradient(circle at top right, rgba(103,232,249,.12), transparent 25%),
+        linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+      color:var(--text);
+      padding:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .container{
+      width:100%;
+      max-width:760px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:28px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+
+    h1{
+      text-align:center;
+      font-size:2.3rem;
+      margin-bottom:12px;
+    }
+
+    .sub{
+      text-align:center;
+      color:var(--soft);
+      line-height:1.5;
+      margin-bottom:24px;
+      font-size:1.05rem;
+    }
+
+    .senha-box{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+
+    .senha-box input{
+      flex:1;
+      min-width:220px;
+      padding:16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      font-size:1rem;
+      outline:none;
+    }
+
+    .senha-box input::placeholder{
+      color:#ccb9ea;
+    }
+
+    button{
+      border:none;
+      border-radius:16px;
+      cursor:pointer;
+      font-weight:bold;
+      transition:.25s;
+    }
+
+    button:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.08);
+    }
+
+    .copiar{
+      padding:14px 20px;
+      color:#fff;
+      background:linear-gradient(135deg,#7c3aed,#a855f7);
+      box-shadow:0 10px 25px rgba(124,58,237,.35);
+    }
+
+    .forca-area{
+      margin-bottom:24px;
+    }
+
+    .forca-topo{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+      color:var(--soft);
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .barra{
+      width:100%;
+      height:14px;
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    #forcaBar{
+      width:0%;
+      height:100%;
+      background:var(--red);
+      transition:.3s;
+      border-radius:999px;
+    }
+
+    .bloco{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      margin-bottom:18px;
+    }
+
+    .bloco label{
+      display:block;
+      margin-bottom:12px;
+      font-weight:bold;
+    }
+
+    .range-area{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    input[type="range"]{
+      flex:1;
+      accent-color:var(--pink);
+    }
+
+    #tamanhoValor{
+      min-width:42px;
+      text-align:center;
+      padding:8px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.08);
+      color:var(--cyan);
+      font-weight:bold;
+      font-size:1.1rem;
+    }
+
+    .opcoes{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:20px;
+    }
+
+    .opcao{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color:var(--soft);
+    }
+
+    .opcao input{
+      width:18px;
+      height:18px;
+      accent-color:var(--pink);
+    }
+
+    .gerar{
+      width:100%;
+      padding:16px;
+      font-size:1rem;
+      color:#fff;
+      background:linear-gradient(135deg,var(--pink),#a855f7,#7c3aed);
+      box-shadow:0 12px 30px rgba(124,58,237,.35);
+      margin-bottom:22px;
+    }
+
+    .dicas{
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:20px;
+    }
+
+    .dicas h2{
+      margin-bottom:12px;
+      font-size:1.2rem;
+    }
+
+    .dicas ul{
+      padding-left:20px;
+      color:var(--soft);
+      line-height:1.7;
+    }
+
+    .status{
+      margin-top:12px;
+      text-align:center;
+      color:#d9c7ff;
+      font-size:.95rem;
+      min-height:20px;
+    }
+
+    @media (max-width:700px){
+      .card{padding:22px;}
+      h1{font-size:1.9rem;}
+      .opcoes{grid-template-columns:1fr;}
+      .senha-box{flex-direction:column;}
+      .copiar{width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>🔐 Gerador de Senhas Seguras</h1>
+      <p class="sub">
+        Crie senhas fortes com boas práticas de segurança da internet.
+      </p>
+
+      <div class="senha-box">
+        <input type="text" id="senha" readonly placeholder="Sua senha aparecerá aqui">
+        <button class="copiar" id="copiarBtn">Copiar</button>
+      </div>
+
+      <div class="forca-area">
+        <div class="forca-topo">
+          <span>Força da senha:</span>
+          <strong id="nivelForca">---</strong>
+        </div>
+        <div class="barra">
+          <div id="forcaBar"></div>
+        </div>
+      </div>
+
+      <div class="bloco">
+        <label for="tamanho">Tamanho da senha</label>
+        <div class="range-area">
+          <input type="range" id="tamanho" min="6" max="32" value="16">
+          <span id="tamanhoValor">16</span>
+        </div>
+      </div>
+
+      <div class="opcoes">
+        <label class="opcao"><input type="checkbox" id="minusculas" checked> Letras minúsculas</label>
+        <label class="opcao"><input type="checkbox" id="maiusculas" checked> Letras maiúsculas</label>
+        <label class="opcao"><input type="checkbox" id="numeros" checked> Números</label>
+        <label class="opcao"><input type="checkbox" id="simbolos" checked> Símbolos</label>
+      </div>
+
+      <button class="gerar" id="gerarBtn">Gerar senha segura</button>
+
+      <div class="dicas">
+        <h2>Boas práticas</h2>
+        <ul>
+          <li>Use pelo menos <strong>12 caracteres</strong>.</li>
+          <li>Misture letras maiúsculas, minúsculas, números e símbolos.</li>
+          <li>Evite nomes, datas e sequências óbvias.</li>
+          <li>Use uma senha diferente para cada conta.</li>
+        </ul>
+      </div>
+
+      <div class="status" id="status"></div>
+    </section>
+  </main>
+
+  <script>
+    const senhaInput = document.getElementById("senha");
+    const copiarBtn = document.getElementById("copiarBtn");
+    const gerarBtn = document.getElementById("gerarBtn");
+    const tamanhoInput = document.getElementById("tamanho");
+    const tamanhoValor = document.getElementById("tamanhoValor");
+    const minusculasInput = document.getElementById("minusculas");
+    const maiusculasInput = document.getElementById("maiusculas");
+    const numerosInput = document.getElementById("numeros");
+    const simbolosInput = document.getElementById("simbolos");
+    const forcaBar = document.getElementById("forcaBar");
+    const nivelForca = document.getElementById("nivelForca");
+    const status = document.getElementById("status");
+
+    const letrasMinusculas = "abcdefghijklmnopqrstuvwxyz";
+    const letrasMaiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const nums = "0123456789";
+    const sims = "!@#$%&*()_+{}[]<>?/|";
+
+    function numeroAleatorio(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    function pegarAleatorio(conjunto) {
+      return conjunto[numeroAleatorio(conjunto.length)];
+    }
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = numeroAleatorio(i + 1);
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function gerarSenha() {
+      const tamanho = parseInt(tamanhoInput.value);
+
+      const usarMinusculas = minusculasInput.checked;
+      const usarMaiusculas = maiusculasInput.checked;
+      const usarNumeros = numerosInput.checked;
+      const usarSimbolos = simbolosInput.checked;
+
+      if (!usarMinusculas && !usarMaiusculas && !usarNumeros && !usarSimbolos) {
+        alert("Selecione pelo menos uma opção.");
+        return;
+      }
+
+      let conjuntos = [];
+      let todos = "";
+
+      if (usarMinusculas) {
+        conjuntos.push(letrasMinusculas);
+        todos += letrasMinusculas;
+      }
+      if (usarMaiusculas) {
+        conjuntos.push(letrasMaiusculas);
+        todos += letrasMaiusculas;
+      }
+      if (usarNumeros) {
+        conjuntos.push(nums);
+        todos += nums;
+      }
+      if (usarSimbolos) {
+        conjuntos.push(sims);
+        todos += sims;
+      }
+
+      let senhaArray = [];
+
+      conjuntos.forEach(conjunto => {
+        senhaArray.push(pegarAleatorio(conjunto));
+      });
+
+      while (senhaArray.length < tamanho) {
+        senhaArray.push(pegarAleatorio(todos));
+      }
+
+      senhaArray = embaralhar(senhaArray);
+      const senhaFinal = senhaArray.slice(0, tamanho).join("");
+
+      senhaInput.value = senhaFinal;
+      atualizarForca(senhaFinal);
+      status.textContent = "Senha gerada com sucesso.";
+    }
+
+    function atualizarForca(senha) {
+      let pontos = 0;
+
+      const temMinuscula = /[a-z]/.test(senha);
+      const temMaiuscula = /[A-Z]/.test(senha);
+      const temNumero = /[0-9]/.test(senha);
+      const temSimbolo = /[^A-Za-z0-9]/.test(senha);
+
+      if (senha.length >= 8) pontos++;
+      if (senha.length >= 12) pontos++;
+      if (senha.length >= 16) pontos++;
+      if (temMinuscula) pontos++;
+      if (temMaiuscula) pontos++;
+      if (temNumero) pontos++;
+      if (temSimbolo) pontos++;
+
+      if (pontos <= 3) {
+        nivelForca.textContent = "Fraca";
+        forcaBar.style.width = "33%";
+        forcaBar.style.background = "#ef4444";
+      } else if (pontos <= 5) {
+        nivelForca.textContent = "Média";
+        forcaBar.style.width = "66%";
+        forcaBar.style.background = "#facc15";
+      } else {
+        nivelForca.textContent = "Forte";
+        forcaBar.style.width = "100%";
+        forcaBar.style.background = "#22c55e";
+      }
+    }
+
+    function copiarSenha() {
+      if (!senhaInput.value) {
+        alert("Gere uma senha antes de copiar.");
+        return;
+      }
+
+      senhaInput.select();
+      senhaInput.setSelectionRange(0, 99999);
+
+      try {
+        document.execCommand("copy");
+        copiarBtn.textContent = "Copiado!";
+        status.textContent = "Senha copiada.";
+        setTimeout(() => {
+          copiarBtn.textContent = "Copiar";
+        }, 1500);
+      } catch (e) {
+        status.textContent = "Não foi possível copiar automaticamente.";
+      }
+    }
+
+    tamanhoInput.addEventListener("input", () => {
+      tamanhoValor.textContent = tamanhoInput.value;
+      gerarSenha();
+    });
+
+    gerarBtn.addEventListener("click", gerarSenha);
+    copiarBtn.addEventListener("click", copiarSenha);
+
+    minusculasInput.addEventListener("change", gerarSenha);
+    maiusculasInput.addEventListener("change", gerarSenha);
+    numerosInput.addEventListener("change", gerarSenha);
+    simbolosInput.addEventListener("change", gerarSenha);
+
+    window.onload = function () {
+      tamanhoValor.textContent = tamanhoInput.value;
+      gerarSenha();
+    };
+  </script>
+</body>
+          </html>
